@@ -1,4 +1,4 @@
-module github.com/caogonghui/memrizr
+module github.com/caogonghui/memrizr/account
 
 go 1.17
 

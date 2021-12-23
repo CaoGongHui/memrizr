@@ -5,8 +5,8 @@ import (
 	"fmt"
 	"testing"
 
-	"github.com/caogonghui/memrizr/model"
-	"github.com/caogonghui/memrizr/model/mocks"
+	"github.com/caogonghui/memrizr/account/model"
+	"github.com/caogonghui/memrizr/account/model/mocks"
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
 	"github.com/stretchr/testify/assert"

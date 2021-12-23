@@ -3,7 +3,7 @@ package mocks
 import (
 	"context"
 
-	"github.com/caogonghui/memrizr/model"
+	"github.com/caogonghui/memrizr/account/model"
 	"github.com/google/uuid"
 
 	"github.com/stretchr/testify/mock"

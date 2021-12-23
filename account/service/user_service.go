@@ -3,7 +3,7 @@ package service
 import (
 	"context"
 
-	"github.com/caogonghui/memrizr/model"
+	"github.com/caogonghui/memrizr/account/model"
 	"github.com/google/uuid"
 )
 
