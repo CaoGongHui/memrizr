@@ -24,3 +24,7 @@ func NewUserService(config *USConfig) model.UserService {
 func (s *UserService) Get(ctx context.Context, uid uuid.UUID) (*model.User, error) {
 	return s.UserRepository.FindByID(ctx, uid)
 }
+
+func (s *UserService) Signup(ctx context.Context, u *model.User) error {
+	panic("Method not implement")
+}

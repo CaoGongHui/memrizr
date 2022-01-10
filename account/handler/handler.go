@@ -9,19 +9,22 @@ import (
 )
 
 type Handler struct {
-	UserService model.UserService
+	UserService  model.UserService
+	TokenService model.TokenService
 }
 
 type Config struct {
-	R           *gin.Engine
-	UserService model.UserService
+	R            *gin.Engine
+	UserService  model.UserService
+	TokenService model.TokenService
 }
 
 func NewHandler(c *Config) {
 	// Create an account group
 	// Create a handler (which will later have injected services)
 	h := &Handler{
-		UserService: c.UserService,
+		UserService:  c.UserService,
+		TokenService: c.TokenService,
 	} // currently has no properties
 
 	// Create a group, or base url for all routes
@@ -35,13 +38,6 @@ func NewHandler(c *Config) {
 	g.POST("/image", h.Image)
 	g.DELETE("/image", h.DeleteImage)
 	g.PUT("/details", h.Details)
-}
-
-// Signup handler
-func (h *Handler) Signup(c *gin.Context) {
-	c.JSON(http.StatusOK, gin.H{
-		"hello": "it's signup",
-	})
 }
 
 // Signin handler
