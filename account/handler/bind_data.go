@@ -8,7 +8,7 @@ import (
 	"github.com/go-playground/validator/v10"
 )
 
-// used to help ex
+// used to help extract validation error
 type invalidArgument struct {
 	Field string `json:"field"`
 	Value string `json:"value"`
@@ -16,10 +16,13 @@ type invalidArgument struct {
 	Param string `json:"param"`
 }
 
+//为了复用 从signup handler里面提取出来
+// return false if binding failed
 func bindData(c *gin.Context, req interface{}) bool {
 	// Bind incoming json to struct and check for validation errors
 	if err := c.ShouldBind(req); err != nil {
 		log.Printf("Error bidding data: %+v\n", err)
+		//如果是标准的validation error 那么就提取出来
 		if errs, ok := err.(validator.ValidationErrors); ok {
 			var invalidArgs []invalidArgument
 			for _, err := range errs {

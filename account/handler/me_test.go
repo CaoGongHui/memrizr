@@ -41,6 +41,7 @@ func TestMe(t *testing.T) {
 		// the only claims we care about in this test
 		// is the UID
 		router := gin.Default()
+		//use 使用一个中间件
 		router.Use(func(c *gin.Context) {
 			c.Set("user", &model.User{
 				UID: uid,

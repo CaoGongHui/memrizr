@@ -19,6 +19,7 @@ func main() {
 
 	router := gin.Default()
 
+	//工厂方法只是修饰gin的router不返回任何东西
 	handler.NewHandler(&handler.Config{
 		R: router,
 	})

@@ -8,17 +8,20 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+// 主要持有所有服务的属性 包括一些业务核心代码的实现方法
 type Handler struct {
 	UserService  model.UserService
 	TokenService model.TokenService
 }
 
+// 配置需要在handler包中初始化的值
 type Config struct {
 	R            *gin.Engine
 	UserService  model.UserService
 	TokenService model.TokenService
 }
 
+// 一个工厂方法 在main函数中调用初始化路由route
 func NewHandler(c *Config) {
 	// Create an account group
 	// Create a handler (which will later have injected services)
@@ -28,6 +31,7 @@ func NewHandler(c *Config) {
 	} // currently has no properties
 
 	// Create a group, or base url for all routes
+	// 使用组的方式 ACCOUNT_API_URL通过配置文件传递
 	g := c.R.Group(os.Getenv("ACCOUNT_API_URL"))
 
 	g.GET("/me", h.Me)

@@ -9,6 +9,7 @@ import (
 )
 
 // MockUserService is a mock type for model.UserService
+// give the access to methods in testify package
 type MockUserService struct {
 	mock.Mock
 }
@@ -17,6 +18,7 @@ type MockUserService struct {
 func (m *MockUserService) Get(ctx context.Context, uid uuid.UUID) (*model.User, error) {
 	// args that will be passed to "Return" in the tests, when function
 	// is called with a uid. Hence the name "ret"
+	// 使用Called表示UserService的Get 方法已经被调用了 返回一个结果数组
 	ret := m.Called(ctx, uid)
 
 	// first value passed to "Return"
