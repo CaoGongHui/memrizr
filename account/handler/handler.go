@@ -2,7 +2,6 @@ package handler
 
 import (
 	"net/http"
-	"os"
 
 	"github.com/caogonghui/memrizr/account/model"
 	"github.com/gin-gonic/gin"
@@ -19,6 +18,7 @@ type Config struct {
 	R            *gin.Engine
 	UserService  model.UserService
 	TokenService model.TokenService
+	BaseURL      string
 }
 
 // 一个工厂方法 在main函数中调用初始化路由route
@@ -32,7 +32,7 @@ func NewHandler(c *Config) {
 
 	// Create a group, or base url for all routes
 	// 使用组的方式 ACCOUNT_API_URL通过配置文件传递
-	g := c.R.Group(os.Getenv("ACCOUNT_API_URL"))
+	g := c.R.Group(c.BaseURL)
 
 	g.GET("/me", h.Me)
 	g.POST("/signup", h.Signup)
