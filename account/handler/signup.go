@@ -10,6 +10,7 @@ import (
 )
 
 type signupReq struct {
+	// binding tag 用来设置校验规则
 	Email    string `json:"email" binding:"required,email"`
 	Password string `json:"password" bidding:"required,gte=6,lte=30"`
 }
@@ -18,6 +19,7 @@ type signupReq struct {
 func (h *Handler) Signup(c *gin.Context) {
 	var req signupReq
 	if ok := bindData(c, &req); !ok {
+		// 如果有错误在binddata函数中会直接返回
 		return
 	}
 	u := &model.User{
