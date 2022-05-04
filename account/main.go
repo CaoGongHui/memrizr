@@ -8,21 +8,22 @@ import (
 	"os/signal"
 	"syscall"
 	"time"
-
-	"github.com/caogonghui/memrizr/account/handler"
-	"github.com/gin-gonic/gin"
 )
 
 func main() {
 	// you could insert your favorite logger here for structured or leveled logging
+
 	log.Println("Starting server...")
+	// 初始化数据库
+	ds, err := initDS()
+	if err != nil {
+		log.Fatalf("Unable to initialize data sources: %v\n", err)
+	}
 
-	router := gin.Default()
-
-	//工厂方法只是修饰gin的router不返回任何东西
-	handler.NewHandler(&handler.Config{
-		R: router,
-	})
+	router, err := inject(ds)
+	if err != nil {
+		log.Fatalf("Failure to inject data sources: %v\n", err)
+	}
 
 	srv := &http.Server{
 		Addr:    ":8080",
@@ -51,7 +52,11 @@ func main() {
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
 
-	// Shutdown server
+	// 关闭数据库
+	if err := ds.close(); err != nil {
+		log.Fatalf("A problem occurred gracefully shutting down data sources: %v\n", err)
+	}
+	// 关闭服务
 	log.Println("Shutting down server...")
 	if err := srv.Shutdown(ctx); err != nil {
 		log.Fatalf("Server forced to shutdown: %v\n", err)
