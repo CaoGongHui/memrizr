@@ -5,22 +5,32 @@ import (
 	"log"
 
 	"github.com/caogonghui/memrizr/account/model"
+
 	"github.com/caogonghui/memrizr/account/model/apperrors"
 	"github.com/google/uuid"
+
 	"github.com/jmoiron/sqlx"
 	"github.com/lib/pq"
 )
 
 // PGUserRepository is data/repository implementation
 // of service layer UserRepository
-type pgUserRepository struct {
+type pGUserRepository struct {
 	DB *sqlx.DB
 }
 
-func (r *pgUserRepository) Create(ctx context.Context, u *model.User) error {
+// NewUserRepository is a factory for initializing User Repositories
+func NewUserRepository(db *sqlx.DB) model.UserResponsitory {
+	return &pGUserRepository{
+		DB: db,
+	}
+}
+
+// Create reaches out to database SQLX api
+func (r *pGUserRepository) Create(ctx context.Context, u *model.User) error {
 	query := "INSERT INTO users (email, password) VALUES ($1, $2) RETURNING *"
 
-	if err := r.DB.GetContext(ctx, query, u.Email, u.Password); err != nil {
+	if err := r.DB.GetContext(ctx, u, query, u.Email, u.Password); err != nil {
 		// check unique constraint
 		if err, ok := err.(*pq.Error); ok && err.Code.Name() == "unique_violation" {
 			log.Printf("Could not create a user with email: %v. Reason: %v\n", u.Email, err.Code.Name())
@@ -34,7 +44,7 @@ func (r *pgUserRepository) Create(ctx context.Context, u *model.User) error {
 }
 
 // FindByID fetches user by id
-func (r *pgUserRepository) FindByID(ctx context.Context, uid uuid.UUID) (*model.User, error) {
+func (r *pGUserRepository) FindByID(ctx context.Context, uid uuid.UUID) (*model.User, error) {
 	user := &model.User{}
 
 	query := "SELECT * FROM users WHERE uid=$1"
@@ -45,11 +55,4 @@ func (r *pgUserRepository) FindByID(ctx context.Context, uid uuid.UUID) (*model.
 	}
 
 	return user, nil
-}
-
-// NewUserRepository is a factory for initializing User Repositories
-func NewUserRepository(db *sqlx.DB) model.UserResponsitory {
-	return &pgUserRepository{
-		DB: db,
-	}
 }

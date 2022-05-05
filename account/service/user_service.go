@@ -9,7 +9,7 @@ import (
 	"github.com/google/uuid"
 )
 
-type UserService struct {
+type userService struct {
 	UserRepository model.UserResponsitory
 }
 
@@ -18,16 +18,16 @@ type USConfig struct {
 }
 
 func NewUserService(config *USConfig) model.UserService {
-	return &UserService{
+	return &userService{
 		UserRepository: config.UserRepository,
 	}
 }
 
-func (s *UserService) Get(ctx context.Context, uid uuid.UUID) (*model.User, error) {
+func (s *userService) Get(ctx context.Context, uid uuid.UUID) (*model.User, error) {
 	return s.UserRepository.FindByID(ctx, uid)
 }
 
-func (s *UserService) Signup(ctx context.Context, u *model.User) error {
+func (s *userService) Signup(ctx context.Context, u *model.User) error {
 	pw, err := hashPassword(u.Password)
 	if err != nil {
 		log.Printf("Unable to signup user")
