@@ -61,7 +61,8 @@ func initDS() (*dataSources, error) {
 	}
 
 	return &dataSources{
-		DB: db,
+		DB:          db,
+		RedisClient: rdb,
 	}, nil
 }
 

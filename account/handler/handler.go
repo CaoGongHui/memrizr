@@ -2,8 +2,11 @@ package handler
 
 import (
 	"net/http"
+	"time"
 
+	middleware "github.com/caogonghui/memrizr/account/handler/middlware"
 	"github.com/caogonghui/memrizr/account/model"
+	"github.com/caogonghui/memrizr/account/model/apperrors"
 	"github.com/gin-gonic/gin"
 )
 
@@ -15,10 +18,11 @@ type Handler struct {
 
 // 配置需要在handler包中初始化的值
 type Config struct {
-	R            *gin.Engine
-	UserService  model.UserService
-	TokenService model.TokenService
-	BaseURL      string
+	R               *gin.Engine
+	UserService     model.UserService
+	TokenService    model.TokenService
+	BaseURL         string
+	TimeoutDuration time.Duration //超时时间
 }
 
 // 一个工厂方法 在main函数中调用初始化路由route
@@ -33,7 +37,9 @@ func NewHandler(c *Config) {
 	// Create a group, or base url for all routes
 	// 使用组的方式 ACCOUNT_API_URL通过配置文件传递
 	g := c.R.Group(c.BaseURL)
-
+	if gin.Mode() != gin.TestMode {
+		g.Use(middleware.Timeout(c.TimeoutDuration, apperrors.NewServiceUnavailable()))
+	}
 	g.GET("/me", h.Me)
 	g.POST("/signup", h.Signup)
 	g.POST("/signin", h.Signin)
@@ -46,6 +52,7 @@ func NewHandler(c *Config) {
 
 // Signin handler
 func (h *Handler) Signin(c *gin.Context) {
+	time.Sleep(1 * time.Second)
 	c.JSON(http.StatusOK, gin.H{
 		"hello": "it's signin",
 	})

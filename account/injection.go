@@ -6,6 +6,7 @@ import (
 	"log"
 	"os"
 	"strconv"
+	"time"
 
 	"github.com/caogonghui/memrizr/account/handler"
 	"github.com/caogonghui/memrizr/account/repository"
@@ -91,12 +92,19 @@ func inject(d *dataSources) (*gin.Engine, error) {
 	//读取baseURL从配置文件中
 	baseURL := os.Getenv("ACCOUNT_API_URL")
 
+	handlerTimeout := os.Getenv("HANDLER_TIMEOUT")
+	ht, err := strconv.ParseInt(handlerTimeout, 0, 64)
+	if err != nil {
+		return nil, fmt.Errorf("could not parse HANDLER_TIMEOUT as int: %w", err)
+	}
+
 	//工厂方法只是修饰gin的router不返回任何东西
 	handler.NewHandler(&handler.Config{
-		R:            router,
-		UserService:  userService,
-		TokenService: tokenService,
-		BaseURL:      baseURL,
+		R:               router,
+		UserService:     userService,
+		TokenService:    tokenService,
+		BaseURL:         baseURL,
+		TimeoutDuration: time.Duration(time.Duration(ht) * time.Second),
 	})
 
 	return router, nil
